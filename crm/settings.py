@@ -28,6 +28,12 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = []
 
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@example.com'
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+
 
 # Application definition
 
@@ -132,3 +138,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 24
