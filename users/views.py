@@ -2,7 +2,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, ResendVerificationSerializer
 from django.http import HttpResponse
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
@@ -20,7 +20,18 @@ class RegisterAPIView(APIView):
             status=status.HTTP_201_CREATED
         )
 
+class ResendVerificationAPIView(APIView):
+    def post(self, request):
+        serializer = ResendVerificationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
+        # Всегда одинаковый ответ (безопаснее)
+        return Response(
+            {"detail": "If this email exists and is not verified, a new link has been sent."},
+            status=status.HTTP_200_OK
+        )
+        
 User = get_user_model()
 
 def verify_email(request, uidb64, token):

@@ -30,3 +30,27 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
 
         return user
+
+# this serializer is give user to resend verification email
+class ResendVerificationSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def save(self, **kwargs):
+        email = self.validated_data["email"].lower().strip()
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            
+            return
+
+        if user.is_active:
+            return
+
+        link = build_verification_link(user)
+        send_verification_email.delay(
+            subject="Verify your email",
+            message=f"Click to verify:\n{link}",
+            recipient=user.email
+        )
+
