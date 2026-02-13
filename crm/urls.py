@@ -22,9 +22,15 @@ from rest_framework_simplejwt.views import (
 )
 
 
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/', include('users.urls'))
+    path('api/', include('users.urls')),
+    path('sentry-debug/', trigger_error),
 ]
